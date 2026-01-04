@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import AdminHeader from "../Components/Admin/AdminHeader";
 import FormData from "../Components/Admin/FormData";
 import DataTable from "../Components/Admin/DataTable";
+import { Button } from "@/components/ui/button"; // Pastikan alias @ sudah benar
 
 const AdminDashboard = ({ products, setProducts }) => {
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -23,7 +24,7 @@ const AdminDashboard = ({ products, setProducts }) => {
             setProducts(
                 products.map((p) =>
                     p.id === editingId
-                        ? { ...formData, id: editingId, price: Number(formData.price) }
+                        ? { ...formData, id: editingId, price: Number(formData.price), image: p.image, desc: p.desc }
                         : p
                 )
             );
@@ -42,10 +43,9 @@ const AdminDashboard = ({ products, setProducts }) => {
         setIsFormOpen(false);
     };
 
+    // Fungsi Delete diperbarui untuk dipanggil dari Dialog Shadcn
     const handleDelete = (id) => {
-        if (window.confirm("Yakin ingin menghapus produk ini?")) {
-            setProducts(products.filter((p) => p.id !== id));
-        }
+        setProducts(products.filter((p) => p.id !== id));
     };
 
     const startEdit = (product) => {
@@ -59,8 +59,8 @@ const AdminDashboard = ({ products, setProducts }) => {
     };
 
     return (
-        <div className="p-6 lg:p-10 bg-gray-50 min-h-screen">
-
+        /* Menggunakan Tailwind untuk layout profesional */
+        <div className="p-6 lg:p-10 bg-gray-50/50 min-h-screen">
             <AdminHeader
                 onAddClick={() => {
                     setIsFormOpen(!isFormOpen);
@@ -71,26 +71,30 @@ const AdminDashboard = ({ products, setProducts }) => {
             />
 
             {isFormOpen && (
-                <FormData
-                    formData={formData}
-                    onChange={handleInputChange}
-                    onSubmit={handleSubmit}
-                    onCancel={() => setIsFormOpen(false)}
-                    isEditing={!!editingId}
-                />
+                <div className="mb-8">
+                    {/* Komponen FormData harus berisi Input Shadcn */}
+                    <FormData
+                        formData={formData}
+                        onChange={handleInputChange}
+                        onSubmit={handleSubmit}
+                        onCancel={() => setIsFormOpen(false)}
+                        isEditing={!!editingId}
+                    />
+                </div>
             )}
 
+            {/* DataTable diperbarui menggunakan komponen Table & Dialog Shadcn */}
             <DataTable
                 products={products}
                 onEdit={startEdit}
                 onDelete={handleDelete}
             />
 
-            <div className="mt-6 text-sm text-gray-400 text-right font-medium">
-                Total Inventory: {products.length} Items
+            <div className="mt-6 text-sm text-muted-foreground text-right font-medium">
+                Total Inventory: <span className="text-foreground font-bold">{products.length}</span> Items
             </div>
         </div>
     );
 };
 
-export default AdminDashboard;
+export default AdminDashboard; //

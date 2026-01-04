@@ -5,10 +5,9 @@ import CatalogPage from "./Pages/CatalogPage";
 import AdminDashboard from "./Pages/AdminDashboard";
 import Navbar from "./Components/Public/Navbar";
 import Footer from "./Components/Public/Footer";
+import ProductDetail from "./Pages/ProductDetail";
 
 function App() {
-    // State Global Sementara (Dummy Data)
-    // Data ini akan dipasing ke User Side dan Admin Side
     const [products, setProducts] = useState([
         {
             id: 1,
@@ -40,11 +39,13 @@ function App() {
             <Navbar />
             <div className="min-h-screen bg-gray-50">
                 <Routes>
-                    
+
                     <Route
                         path="/"
                         element={<CatalogPage products={products} />}
                     />
+                    <Route path="/detail-produk/:id" 
+                    element={<ProductDetail products={products} />} />
 
                     <Route
                         path="/admin"

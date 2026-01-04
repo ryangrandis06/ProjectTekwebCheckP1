@@ -1,61 +1,107 @@
 import React from "react";
 import { Edit3, Trash2, Inbox } from "lucide-react";
+// Import komponen Shadcn UI
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 const DataTable = ({ products, onEdit, onDelete }) => {
     return (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            <table className="w-full text-left">
-                <thead className="bg-gray-50 border-b border-gray-100">
-                    <tr>
-                        <th className="p-4 text-xs font-black text-gray-400 uppercase tracking-widest">Produk</th>
-                        <th className="p-4 text-xs font-black text-gray-400 uppercase tracking-widest">Kategori</th>
-                        <th className="p-4 text-xs font-black text-gray-400 uppercase tracking-widest">Harga</th>
-                        <th className="p-4 text-xs font-black text-gray-400 uppercase tracking-widest text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-50">
+            <Table>
+                <TableHeader className="bg-gray-50 border-b border-gray-100">
+                    <TableRow>
+                        <TableHead className="p-4 text-xs font-black text-gray-400 uppercase tracking-widest">Produk</TableHead>
+                        <TableHead className="p-4 text-xs font-black text-gray-400 uppercase tracking-widest">Kategori</TableHead>
+                        <TableHead className="p-4 text-xs font-black text-gray-400 uppercase tracking-widest">Harga</TableHead>
+                        <TableHead className="p-4 text-xs font-black text-gray-400 uppercase tracking-widest text-center">Aksi</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody className="divide-y divide-gray-50">
                     {products.length > 0 ? (
                         products.map((item) => (
-                            <tr key={item.id} className="hover:bg-blue-50/30 transition-colors group">
-                                <td className="p-4 font-bold text-gray-700">{item.name}</td>
-                                <td className="p-4">
-                                    <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-black rounded-full uppercase">
+                            <TableRow key={item.id} className="hover:bg-blue-50/30 transition-colors group">
+                                <TableCell className="p-4 font-bold text-gray-700">{item.name}</TableCell>
+                                <TableCell className="p-4">
+                                    <Badge variant="secondary" className="bg-blue-50 text-blue-600 text-[10px] font-black rounded-full uppercase">
                                         {item.category}
-                                    </span>
-                                </td>
-                                <td className="p-4 font-medium text-gray-600">
+                                    </Badge>
+                                </TableCell>
+                                <TableCell className="p-4 font-medium text-gray-600">
                                     Rp {item.price.toLocaleString("id-ID")}
-                                </td>
-                                <td className="p-4">
+                                </TableCell>
+                                <TableCell className="p-4">
                                     <div className="flex justify-center gap-2">
-                                        <button
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
                                             onClick={() => onEdit(item)}
-                                            className="p-2 text-amber-500 hover:bg-amber-50 rounded-lg transition-all"
+                                            className="text-amber-500 hover:bg-amber-50 rounded-lg transition-all"
                                         >
                                             <Edit3 size={18} />
-                                        </button>
-                                        <button
-                                            onClick={() => onDelete(item.id)}
-                                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                                        >
-                                            <Trash2 size={18} />
-                                        </button>
+                                        </Button>
+
+                                        
+                                        <Dialog>
+                                            <DialogTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                                >
+                                                    <Trash2 size={18} />
+                                                </Button>
+                                            </DialogTrigger>
+                                            <DialogContent>
+                                                <DialogHeader>
+                                                    <DialogTitle>Hapus Produk?</DialogTitle>
+                                                    <DialogDescription>
+                                                        Apakah Anda yakin ingin menghapus <strong>{item.name}</strong>? Tindakan ini tidak dapat dibatalkan.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <DialogFooter className="gap-2 sm:gap-0">
+                                                    <Button variant="outline">Batal</Button>
+                                                    <Button
+                                                        variant="destructive"
+                                                        onClick={() => onDelete(item.id)}
+                                                    >
+                                                        Ya, Hapus
+                                                    </Button>
+                                                </DialogFooter>
+                                            </DialogContent>
+                                        </Dialog>
                                     </div>
-                                </td>
-                            </tr>
+                                </TableCell>
+                            </TableRow>
                         ))
                     ) : (
-                        <tr>
-                            <td colSpan="4" className="p-12 text-center text-gray-300">
+                        <TableRow>
+                            <TableCell colSpan="4" className="p-12 text-center text-gray-300">
                                 <div className="flex flex-col items-center gap-2">
                                     <Inbox size={40} />
-                                    <p className="font-medium">Belum ada data produk</p>
+                                    <p className="font-medium text-gray-400">Belum ada data produk</p>
                                 </div>
-                            </td>
-                        </tr>
+                            </TableCell>
+                        </TableRow>
                     )}
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
         </div>
     );
 };
