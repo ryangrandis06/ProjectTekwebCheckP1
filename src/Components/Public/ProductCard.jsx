@@ -9,7 +9,7 @@ const ProductCard = ({ product }) => {
     const WHATSAPP_NUMBER = "6281394785848";
 
     const handleBuyWhatsApp = (e) => {
-        e.preventDefault(); // Mencegah navigasi Link saat klik tombol WA
+        e.preventDefault(); 
         const message = `Halo Admin, saya ingin memesan produk berikut:%0A%0A` +
             `*Nama Produk:* ${product.name}%0A` +
             `*Harga:* Rp ${product.price.toLocaleString("id-ID")}%0A` +
@@ -21,7 +21,7 @@ const ProductCard = ({ product }) => {
     };
 
     return (
-        /* Menggunakan Shadcn Card untuk Estetika Profesional */
+        
         <Card className="group overflow-hidden border-2 transition-all hover:border-primary/50 hover:shadow-xl">
             <CardHeader className="p-0 relative aspect-square overflow-hidden bg-muted">
                 <img
@@ -30,7 +30,7 @@ const ProductCard = ({ product }) => {
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute top-3 right-3">
-                    {/* Menggunakan Shadcn Badge */}
+                    
                     <Badge variant="secondary" className="shadow-sm font-black uppercase tracking-widest">
                         {product.category || "Produk"}
                     </Badge>
@@ -53,7 +53,7 @@ const ProductCard = ({ product }) => {
                         </span>
                     </div>
 
-                    {/* Menggunakan Shadcn Button untuk beli via WA */}
+                    
                     <Button
                         size="icon"
                         onClick={handleBuyWhatsApp}
@@ -65,7 +65,7 @@ const ProductCard = ({ product }) => {
             </CardContent>
 
             <CardFooter className="p-5 pt-0">
-                {/* Navigasi Dynamic Routing menggunakan Link ke rute detail */}
+                
                 <Button asChild variant="outline" className="w-full gap-2 font-bold text-xs uppercase tracking-wider">
                     <Link to={`/detail-produk/${product.id}`}>
                         LIHAT DETAIL <ExternalLink size={14} />

@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom"; 
 import { Store, Instagram, Twitter, Facebook, Mail } from "lucide-react";
 
 const Footer = () => {
@@ -21,16 +22,16 @@ const Footer = () => {
                     </div>
 
                     <div>
-                        <h4 className="font-bold text-gray-800 mb-4">Navigasi</h4>
-                        <ul className="flex flex-col gap-2 text-sm text-gray-500">
-                            <li><a href="/" className="hover:text-blue-600 transition-colors">Katalog Produk</a></li>
-                            <li><a href="/admin" className="hover:text-blue-600 transition-colors">Admin Dashboard</a></li>
-                            <li><a href="#" className="hover:text-blue-600 transition-colors">Tentang Kami</a></li>
+                        <h4 className="font-bold text-gray-800 mb-4 uppercase tracking-wider text-xs">Navigasi</h4>
+                        <ul className="flex flex-col gap-2 text-sm text-gray-500 font-medium">
+                            <li><Link to="/" className="hover:text-blue-600 transition-colors">Beranda</Link></li>
+                            <li><Link to="/catalog" className="hover:text-blue-600 transition-colors">Katalog Produk</Link></li>
+                            <li><Link to="/tentang-kami" className="hover:text-blue-600 transition-colors">Tentang Kami</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h4 className="font-bold text-gray-800 mb-4">Hubungi Kami</h4>
+                        <h4 className="font-bold text-gray-800 mb-4 uppercase tracking-wider text-xs">Hubungi Kami</h4>
                         <div className="flex gap-4 mb-4">
                             <a href="#" className="p-2 bg-gray-50 rounded-full text-gray-400 hover:text-pink-600 hover:bg-pink-50 transition-all">
                                 <Instagram size={20} />
@@ -47,12 +48,11 @@ const Footer = () => {
                             <span>support@GKstore.com</span>
                         </div>
                     </div>
-
                 </div>
 
                 <div className="border-t border-gray-50 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-xs text-gray-400 font-medium">
-                        © 2025 GK-Store. All rights reserved. Checkpoint 1 Project.
+                        © 2026 GK-Store. All rights reserved.
                     </p>
                     <div className="flex gap-6 text-xs text-gray-400 font-bold uppercase tracking-widest">
                         <span>Privacy Policy</span>

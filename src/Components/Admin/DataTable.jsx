@@ -1,6 +1,5 @@
 import React from "react";
 import { Edit3, Trash2, Inbox } from "lucide-react";
-// Import komponen Shadcn UI
 import {
     Table,
     TableBody,
@@ -17,6 +16,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogClose, // Tambahkan ini agar modal bisa menutup otomatis
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,7 +44,8 @@ const DataTable = ({ products, onEdit, onDelete }) => {
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="p-4 font-medium text-gray-600">
-                                    Rp {item.price.toLocaleString("id-ID")}
+                                    {/* Gunakan optional chaining agar tidak error jika price undefined */}
+                                    Rp {item.price?.toLocaleString("id-ID") || "0"}
                                 </TableCell>
                                 <TableCell className="p-4">
                                     <div className="flex justify-center gap-2">
@@ -57,7 +58,6 @@ const DataTable = ({ products, onEdit, onDelete }) => {
                                             <Edit3 size={18} />
                                         </Button>
 
-                                        
                                         <Dialog>
                                             <DialogTrigger asChild>
                                                 <Button
@@ -76,13 +76,17 @@ const DataTable = ({ products, onEdit, onDelete }) => {
                                                     </DialogDescription>
                                                 </DialogHeader>
                                                 <DialogFooter className="gap-2 sm:gap-0">
-                                                    <Button variant="outline">Batal</Button>
-                                                    <Button
-                                                        variant="destructive"
-                                                        onClick={() => onDelete(item.id)}
-                                                    >
-                                                        Ya, Hapus
-                                                    </Button>
+                                                    <DialogClose asChild>
+                                                        <Button variant="outline">Batal</Button>
+                                                    </DialogClose>
+                                                    <DialogClose asChild>
+                                                        <Button
+                                                            variant="destructive"
+                                                            onClick={() => onDelete(item.id)}
+                                                        >
+                                                            Ya, Hapus
+                                                        </Button>
+                                                    </DialogClose>
                                                 </DialogFooter>
                                             </DialogContent>
                                         </Dialog>

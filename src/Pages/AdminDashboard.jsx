@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import AdminHeader from "../Components/Admin/AdminHeader";
 import FormData from "../Components/Admin/FormData";
 import DataTable from "../Components/Admin/DataTable";
-import { Button } from "@/components/ui/button"; // Pastikan alias @ sudah benar
 
-const AdminDashboard = ({ products, setProducts }) => {
+const AdminDashboard = () => {
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false); 
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({
@@ -13,39 +15,70 @@ const AdminDashboard = ({ products, setProducts }) => {
         category: "Elektronik",
     });
 
+    const API_URL = "https://695bbbda1d8041d5eeb82c39.mockapi.io/products";
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get(API_URL);
+                setProducts(response.data);
+            } catch (error) {
+                console.error("Gagal mengambil data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProducts();
+    }, []);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (editingId) {
-            setProducts(
-                products.map((p) =>
-                    p.id === editingId
-                        ? { ...formData, id: editingId, price: Number(formData.price), image: p.image, desc: p.desc }
-                        : p
-                )
-            );
-            setEditingId(null);
-        } else {
-            const newProduct = {
-                ...formData,
-                id: Date.now(),
-                price: Number(formData.price),
-                image: "https://placehold.co/400x400?text=" + formData.name,
-                desc: `Produk berkualitas kategori ${formData.category}`,
-            };
-            setProducts([...products, newProduct]);
+        setLoading(true);
+        try {
+            if (editingId) {
+                
+                const response = await axios.put(`${API_URL}/${editingId}`, {
+                    ...formData,
+                    price: Number(formData.price),
+                });
+                if (response.status === 200) {
+                    setProducts(products.map((p) => (p.id === editingId ? response.data : p)));
+                    setEditingId(null);
+                }
+            } else {
+                
+                const response = await axios.post(API_URL, {
+                    ...formData,
+                    price: Number(formData.price),
+                    image: `https://placehold.co/400x400?text=${encodeURIComponent(formData.name)}`,
+                    desc: `Produk berkualitas kategori ${formData.category}`,
+                });
+                setProducts([...products, response.data]);
+            }
+            setFormData({ name: "", price: "", category: "Elektronik" });
+            setIsFormOpen(false);
+        } catch (error) {
+            console.error("Gagal menyimpan data:", error);
+            alert("Terjadi kesalahan saat menyimpan data. Cek koneksi atau masalah CORS.");
+        } finally {
+            setLoading(false);
         }
-        setFormData({ name: "", price: "", category: "Elektronik" });
-        setIsFormOpen(false);
     };
 
-    // Fungsi Delete diperbarui untuk dipanggil dari Dialog Shadcn
-    const handleDelete = (id) => {
-        setProducts(products.filter((p) => p.id !== id));
+    const handleDelete = async (id) => {
+        if (!window.confirm("Yakin ingin menghapus produk ini?")) return;
+        try {
+            await axios.delete(`${API_URL}/${id}`);
+            setProducts(products.filter((p) => p.id !== id));
+        } catch (error) {
+            console.error("Gagal menghapus data:", error);
+        }
     };
 
     const startEdit = (product) => {
@@ -59,7 +92,6 @@ const AdminDashboard = ({ products, setProducts }) => {
     };
 
     return (
-        /* Menggunakan Tailwind untuk layout profesional */
         <div className="p-6 lg:p-10 bg-gray-50/50 min-h-screen">
             <AdminHeader
                 onAddClick={() => {
@@ -72,23 +104,27 @@ const AdminDashboard = ({ products, setProducts }) => {
 
             {isFormOpen && (
                 <div className="mb-8">
-                    {/* Komponen FormData harus berisi Input Shadcn */}
                     <FormData
                         formData={formData}
                         onChange={handleInputChange}
                         onSubmit={handleSubmit}
                         onCancel={() => setIsFormOpen(false)}
                         isEditing={!!editingId}
+                        loading={loading} 
                     />
                 </div>
             )}
 
-            {/* DataTable diperbarui menggunakan komponen Table & Dialog Shadcn */}
-            <DataTable
-                products={products}
-                onEdit={startEdit}
-                onDelete={handleDelete}
-            />
+            
+            {loading && products.length === 0 ? (
+                <p className="text-center py-10">Memuat data produk...</p>
+            ) : (
+                <DataTable
+                    products={products}
+                    onEdit={startEdit}
+                    onDelete={handleDelete}
+                />
+            )}
 
             <div className="mt-6 text-sm text-muted-foreground text-right font-medium">
                 Total Inventory: <span className="text-foreground font-bold">{products.length}</span> Items
@@ -97,4 +133,4 @@ const AdminDashboard = ({ products, setProducts }) => {
     );
 };
 
-export default AdminDashboard; //
+export default AdminDashboard;

@@ -23,6 +23,7 @@ const AdminHeader = ({ onAddClick, isFormOpen }) => {
                 {isFormOpen ? "Batal" : "Tambah Produk"}
             </button>
         </div>
+        
     );
 };
 
