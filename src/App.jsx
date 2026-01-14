@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"; // Import Navigate untuk proteksi
 import CatalogPage from "./Pages/CatalogPage";
 import AdminDashboard from "./Pages/AdminDashboard";
 import Navbar from "./Components/Public/Navbar";
@@ -7,52 +7,45 @@ import Footer from "./Components/Public/Footer";
 import ProductDetail from "./Pages/ProductDetail";
 import HomePage from "./Homepage";
 import AboutPage from "./Components/Public/AboutPage";
+import LoginPage from "./Pages/LoginPage";
+
+const ProtectedRoute = ({ children }) => {
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    return isLoggedIn ? children : <Navigate to="/login" replace />;
+};
 
 function App() {
-    
-    const [products, setProducts] = useState([]);
-
-    
-    const deleteProduct = (id) => {
-        const updatedProducts = products.filter((item) => item.id !== id);
-        setProducts(updatedProducts);
-        console.log(`Produk dengan ID ${id} telah dihapus dari state.`);
-    };
-
     return (
         <Router>
+            
             <Navbar />
+            
             <div className="min-h-screen bg-white">
                 <Routes>
                     
                     <Route path="/" element={<HomePage />} />
 
-                    
-                    <Route 
-                        path="/catalog" 
-                        element={<CatalogPage products={products} setProducts={setProducts} />} 
-                    />
+                    <Route path="/login" element={<LoginPage />} />
 
-                    
-                    <Route 
-                        path="/detail-produk/:id" 
-                        element={<ProductDetail products={products} />} 
-                    />
+                    <Route path="/catalog" element={<CatalogPage />} />
 
-                    
-                    <Route
+                    <Route path="/detail-produk/:id" element={<ProductDetail />} />
+
+                    <Route 
                         path="/admin"
                         element={
-                            <AdminDashboard 
-                                products={products} 
-                                setProducts={setProducts} 
-                                onDelete={deleteProduct} 
-                            />
+                            <ProtectedRoute>
+                                <AdminDashboard />
+                            </ProtectedRoute>
                         }
                     />
+
                     <Route path="/tentang-kami" element={<AboutPage />} />
+                    
+                    <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </div>
+
             <Footer />
         </Router>
     );

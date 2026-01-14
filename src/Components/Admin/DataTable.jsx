@@ -16,7 +16,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
-    DialogClose, // Tambahkan ini agar modal bisa menutup otomatis
+    DialogClose, 
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,7 +44,7 @@ const DataTable = ({ products, onEdit, onDelete }) => {
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="p-4 font-medium text-gray-600">
-                                    {/* Gunakan optional chaining agar tidak error jika price undefined */}
+                                    
                                     Rp {item.price?.toLocaleString("id-ID") || "0"}
                                 </TableCell>
                                 <TableCell className="p-4">
