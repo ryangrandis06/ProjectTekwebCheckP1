@@ -4,6 +4,7 @@ import AdminHeader from "../Components/Admin/AdminHeader";
 import FormData from "../Components/Admin/FormData";
 import DataTable from "../Components/Admin/DataTable";
 
+
 const AdminDashboard = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false); 
@@ -101,6 +102,7 @@ const AdminDashboard = () => {
                 }}
                 isFormOpen={isFormOpen}
             />
+            
 
             {isFormOpen && (
                 <div className="mb-8">

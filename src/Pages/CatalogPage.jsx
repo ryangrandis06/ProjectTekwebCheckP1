@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ProductCard from "../Components/Public/ProductCard";
 import { Skeleton } from "@/components/ui/skeleton"; 
+import { Button } from "@/Components/ui/button";
 
 const CatalogPage = () => {
     const [products, setProducts] = useState([]);

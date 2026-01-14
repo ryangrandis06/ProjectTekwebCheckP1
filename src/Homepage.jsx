@@ -5,17 +5,25 @@ import { Skeleton } from "@/components/ui/skeleton";
 import ProductCard from "./Components/Public/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"; 
-import { ArrowRight, Search, X } from "lucide-react"; 
+import { ArrowRight, Search, X, SlidersHorizontal, Shirt, Smartphone, Watch, Check } from "lucide-react"; 
 
 const Homepage = () => {
     const navigate = useNavigate(); 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isCatalogOpen, setIsCatalogOpen] = useState(false);
-    
     const [searchQuery, setSearchQuery] = useState("");
+    
+    const [selectedCategory, setSelectedCategory] = useState("Semua");
 
     const API_URL = "https://695bbbda1d8041d5eeb82c39.mockapi.io/products";
+
+    const categories = [
+        { id: 'semua', name: 'Semua', icon: <SlidersHorizontal size={18} /> },
+        { id: 'pakaian', name: 'Pakaian', icon: <Shirt size={18} /> },
+        { id: 'elektronik', name: 'Elektronik', icon: <Smartphone size={18} /> },
+        { id: 'accessories', name: 'Accessories', icon: <Watch size={18} /> },
+    ];
 
     const fetchProducts = async () => {
         setLoading(true);
@@ -34,10 +42,17 @@ const Homepage = () => {
         setIsCatalogOpen(true);
     };
 
-    const filteredProducts = products.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const filteredProducts = products.filter((product) => {
+        const matchesSearch = 
+            product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            product.category.toLowerCase().includes(searchQuery.toLowerCase());
+        
+        const matchesCategory = 
+            selectedCategory === "Semua" || 
+            product.category.toLowerCase() === selectedCategory.toLowerCase();
+
+        return matchesSearch && matchesCategory;
+    });
 
     return (
         <div className="flex flex-col min-h-screen bg-white">
@@ -46,7 +61,6 @@ const Homepage = () => {
                     <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
                         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-500 rounded-full blur-[120px]"></div>
                     </div>
-                    
                     <div className="container mx-auto px-6 text-center relative z-10">
                         <h1 className="text-6xl lg:text-8xl font-black mb-6 tracking-tighter italic">
                             GENG. <span className="text-blue-500">KAPAK.</span>
@@ -56,7 +70,6 @@ const Homepage = () => {
                         </p>
                         <Button 
                             size="lg" 
-                            variant="default" 
                             onClick={() => navigate("/catalog")} 
                             className="bg-blue-600 hover:bg-blue-700 text-white font-black px-12 py-8 text-xl rounded-2xl shadow-2xl shadow-blue-500/20 transition-transform hover:scale-105 active:scale-95"
                         >
@@ -73,22 +86,41 @@ const Homepage = () => {
                         </div>
 
                         {isCatalogOpen && (
-                            <div className="relative w-full md:w-96 group animate-in fade-in slide-in-from-right-5 duration-500">
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
-                                <Input 
-                                    placeholder="Cari produk atau kategori..." 
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="pl-12 pr-10 py-7 rounded-2xl border-2 border-slate-100 focus:border-blue-500 bg-slate-50/50 shadow-sm transition-all text-lg font-medium"
-                                />
-                                {searchQuery && (
-                                    <button 
-                                        onClick={() => setSearchQuery("")}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                                    >
-                                        <X size={18} />
-                                    </button>
-                                )}
+                            <div className="flex flex-col gap-4 w-full md:w-auto">
+                                <div className="relative w-full md:w-96 group">
+                                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors" size={20} />
+                                    <Input 
+                                        placeholder="Cari produk..." 
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="pl-12 pr-10 py-7 rounded-2xl border-2 border-slate-100 focus:border-blue-500 bg-slate-50/50 shadow-sm transition-all text-lg font-medium"
+                                    />
+                                    {searchQuery && (
+                                        <button onClick={() => setSearchQuery("")} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                                            <X size={18} />
+                                        </button>
+                                    )}
+                                </div>
+
+                                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2">
+                                    {categories.map((cat) => {
+                                        const isActive = selectedCategory === cat.name;
+                                        return (
+                                            <button
+                                                key={cat.id}
+                                                onClick={() => setSelectedCategory(cat.name)}
+                                                className={`flex items-center gap-2 px-5 py-2.5 rounded-full border-2 transition-all duration-200 whitespace-nowrap font-bold ${
+                                                    isActive 
+                                                    ? 'bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-200 scale-105' 
+                                                    : 'bg-white text-slate-600 border-slate-100 hover:border-slate-300'
+                                                }`}
+                                            >
+                                                {isActive ? <Check size={16} strokeWidth={3} /> : cat.icon}
+                                                <span>{cat.name}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
                             </div>
                         )}
 
@@ -119,7 +151,16 @@ const Homepage = () => {
                                 <>
                                     {filteredProducts.length === 0 ? (
                                         <div className="text-center py-20 bg-slate-50 rounded-[3rem] border-2 border-dashed border-slate-200">
-                                            <p className="text-xl font-bold text-slate-400">Oops! Produk "{searchQuery}" tidak ditemukan.</p>
+                                            <p className="text-xl font-bold text-slate-400">
+                                                Maaf Produk di kategori "{selectedCategory}" tidak ditemukan.
+                                            </p>
+                                            <Button 
+                                                variant="link" 
+                                                onClick={() => {setSelectedCategory("Semua"); setSearchQuery("")}}
+                                                className="text-blue-500 mt-2"
+                                            >
+                                                Reset Filter
+                                            </Button>
                                         </div>
                                     ) : (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
